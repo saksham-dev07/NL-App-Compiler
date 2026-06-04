@@ -1,0 +1,146 @@
+{
+    "realPrompts": [
+        {
+            "id": "real-01",
+            "name": "CRM System",
+            "prompt": "Build a CRM with login, contacts, dashboard, role-based access, and premium plan with payments. Admins can see analytics.",
+            "expectedEntities": ["User", "Contact", "Deal"],
+            "expectedFeatures": ["login", "dashboard", "contacts", "analytics"]
+        },
+        {
+            "id": "real-02",
+            "name": "Project Management",
+            "prompt": "Create a project management tool like Trello with boards, cards, drag-and-drop, team assignments, due dates, and activity logs.",
+            "expectedEntities": ["User", "Board", "Card"],
+            "expectedFeatures": ["boards", "cards", "assignments"]
+        },
+        {
+            "id": "real-03",
+            "name": "E-Commerce Store",
+            "prompt": "Build an e-commerce store with products, categories, cart, checkout with Stripe, order tracking, and admin dashboard for inventory management.",
+            "expectedEntities": ["User", "Product", "Order"],
+            "expectedFeatures": ["products", "cart", "checkout", "orders"]
+        },
+        {
+            "id": "real-04",
+            "name": "Learning Management System",
+            "prompt": "Create a learning management system with courses, lessons, quizzes, student progress tracking, certificates, and instructor dashboard.",
+            "expectedEntities": ["User", "Course", "Lesson"],
+            "expectedFeatures": ["courses", "quizzes", "progress"]
+        },
+        {
+            "id": "real-05",
+            "name": "Restaurant Reservation",
+            "prompt": "Build a restaurant reservation system with table management, time slots, customer reviews, menu display, and admin analytics.",
+            "expectedEntities": ["User", "Reservation", "Table"],
+            "expectedFeatures": ["reservations", "menu", "reviews"]
+        },
+        {
+            "id": "real-06",
+            "name": "HR Management",
+            "prompt": "Build an HR management app with employees, departments, leave requests, payroll tracking, performance reviews, and admin reports.",
+            "expectedEntities": ["User", "Employee", "LeaveRequest"],
+            "expectedFeatures": ["employees", "leave", "payroll"]
+        },
+        {
+            "id": "real-07",
+            "name": "Real Estate Platform",
+            "prompt": "Create a real estate listing platform with property search, filters, agent profiles, saved listings, contact forms, and admin property management.",
+            "expectedEntities": ["User", "Property", "Agent"],
+            "expectedFeatures": ["search", "listings", "agents"]
+        },
+        {
+            "id": "real-08",
+            "name": "Event Management",
+            "prompt": "Build an event management platform with events, tickets, schedules, speaker profiles, attendee registration, and organizer dashboard.",
+            "expectedEntities": ["User", "Event", "Ticket"],
+            "expectedFeatures": ["events", "tickets", "registration"]
+        },
+        {
+            "id": "real-09",
+            "name": "Healthcare Booking",
+            "prompt": "Create a healthcare appointment booking system with doctors, patients, medical records, prescriptions, appointment scheduling, and admin analytics.",
+            "expectedEntities": ["User", "Doctor", "Appointment"],
+            "expectedFeatures": ["appointments", "patients", "prescriptions"]
+        },
+        {
+            "id": "real-10",
+            "name": "Social Media Dashboard",
+            "prompt": "Build a social media management dashboard with posts, analytics, scheduling, multiple platform support, team collaboration, and content calendar.",
+            "expectedEntities": ["User", "Post"],
+            "expectedFeatures": ["posts", "analytics", "scheduling"]
+        }
+    ],
+    "edgeCases": [
+        {
+            "id": "edge-01",
+            "name": "Extremely Vague",
+            "prompt": "Make me an app",
+            "expectedBehavior": "shouldHandleGracefully",
+            "description": "Tests handling of minimal input"
+        },
+        {
+            "id": "edge-02",
+            "name": "Conflicting Requirements",
+            "prompt": "Public app with private data that everyone can edit but no one can see",
+            "expectedBehavior": "shouldDetectConflict",
+            "description": "Tests conflict detection"
+        },
+        {
+            "id": "edge-03",
+            "name": "Single Word",
+            "prompt": "Dashboard",
+            "expectedBehavior": "shouldHandleGracefully",
+            "description": "Tests extremely minimal input"
+        },
+        {
+            "id": "edge-04",
+            "name": "Massive Scope",
+            "prompt": "Build me Facebook + Twitter + LinkedIn combined with all features, real-time messaging, stories, marketplace, job board, and video streaming",
+            "expectedBehavior": "shouldHandleGracefully",
+            "description": "Tests unreasonably large scope"
+        },
+        {
+            "id": "edge-05",
+            "name": "Non-App Request",
+            "prompt": "Write me a poem about databases and their beauty in the moonlight",
+            "expectedBehavior": "shouldRejectOrAdapt",
+            "description": "Tests non-application request"
+        },
+        {
+            "id": "edge-06",
+            "name": "Contradictory Roles",
+            "prompt": "All users are admin but admins have restricted access and cannot see any data while regular users see everything",
+            "expectedBehavior": "shouldDetectConflict",
+            "description": "Tests role contradiction"
+        },
+        {
+            "id": "edge-07",
+            "name": "No UI Needed",
+            "prompt": "Background job that processes CSV files and sends email reports every morning",
+            "expectedBehavior": "shouldHandleGracefully",
+            "description": "Tests non-UI application"
+        },
+        {
+            "id": "edge-08",
+            "name": "Simple Todo",
+            "prompt": "Todo list",
+            "expectedBehavior": "shouldHandleGracefully",
+            "description": "Tests minimal but clear request"
+        },
+        {
+            "id": "edge-09",
+            "name": "Complex Auth",
+            "prompt": "5-level approval workflow with delegation, escalation, timeout rules, deputy assignments, and audit trail for each approval step",
+            "expectedBehavior": "shouldHandleGracefully",
+            "description": "Tests complex authorization patterns"
+        },
+        {
+            "id": "edge-10",
+            "name": "Ambiguous Naming",
+            "prompt": "Thing manager with stuff and items that do actions on objects which contain elements of various categories",
+            "expectedBehavior": "shouldHandleGracefully",
+            "description": "Tests ambiguous entity naming"
+        }
+    ]
+}

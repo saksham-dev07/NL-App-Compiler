@@ -1,0 +1,20 @@
+{
+  "name": "nl-app-compiler",
+  "version": "1.0.0",
+  "description": "Natural Language to Application Compiler - Converts plain English to working apps",
+  "main": "server/index.js",
+  "scripts": {
+    "dev": "node server/index.js",
+    "evaluate": "node evaluation/runner.js",
+    "start": "node server/index.js"
+  },
+  "keywords": ["ai", "compiler", "app-generator", "natural-language"],
+  "license": "MIT",
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "uuid": "^11.1.0"
+  }
+}
