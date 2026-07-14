@@ -1,10 +1,11 @@
 # NL App Compiler
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js CI](https://github.com/yourusername/nl-app-compiler/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/nl-app-compiler/actions/workflows/ci.yml)
+[![Node.js CI](https://github.com/saksham-dev07/NL-App-Compiler/actions/workflows/ci.yml/badge.svg)](https://github.com/saksham-dev07/NL-App-Compiler/actions/workflows/ci.yml)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org)
 
 > **Natural Language → Structured Config → Validated → Executable → Working Application**
+
 
 A multi-stage compilation pipeline that transforms natural language descriptions into fully working web applications. Inspired by [Base44](https://base44.com/).
 
