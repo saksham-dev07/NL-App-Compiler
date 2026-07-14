@@ -16,5 +16,12 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "uuid": "^11.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/nl-app-compiler.git"
   }
 }

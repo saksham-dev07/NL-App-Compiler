@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci --prefer-offline
+    - run: npm run evaluate
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        # The evaluation script seems to require a key. 
+        # If the user doesn't set it in Github Secrets, it might fail.
+        # But this is a good template.
