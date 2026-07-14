@@ -3,6 +3,27 @@
 // =====================================================
 
 /**
+ * Check if a DB table exists that matches an entity name (handling simple plurals).
+ */
+function hasMatchingTable(entity, dbTables) {
+    if (!entity) return false;
+    const base = toSnakeCase(entity);
+    if (dbTables.has(base)) return true;
+    if (dbTables.has(base + 's')) return true;
+    if (dbTables.has(base + 'es')) return true;
+    if (dbTables.has(base.replace(/y$/, 'ies'))) return true;
+    if (dbTables.has(base.replace(/s$/, ''))) return true;
+    
+    // Fuzzy fallback
+    for (const table of dbTables) {
+        if (table.startsWith(base) || base.startsWith(table)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
  * Check consistency across all four schema layers.
  * Returns an array of issues found.
  * @param {object} config - { ui, api, db, auth }
@@ -65,14 +86,17 @@ function checkConsistency(config) {
         api.endpoints.forEach((endpoint) => {
             // Check entity references
             if (endpoint.entity) {
-                const entityTableName = toSnakeCase(endpoint.entity) + 's';
-                const altTableName = toSnakeCase(endpoint.entity);
-                if (!dbTables.has(entityTableName) && !dbTables.has(altTableName) && !dbTables.has(endpoint.entity)) {
-                    issues.push({
-                        severity: 'warning',
-                        layer: 'cross-layer',
-                        message: `API endpoint "${endpoint.method} ${endpoint.path}" references entity "${endpoint.entity}" but no matching DB table found`,
-                    });
+                const entityLower = endpoint.entity.toLowerCase();
+                const virtualEntities = new Set(['analytics', 'dashboard', 'report', 'search', 'upload', 'auth', 'session', 'stats', 'metric', 'all', '*']);
+                
+                if (!virtualEntities.has(entityLower)) {
+                    if (!hasMatchingTable(endpoint.entity, dbTables) && !dbTables.has(endpoint.entity)) {
+                        issues.push({
+                            severity: 'warning',
+                            layer: 'cross-layer',
+                            message: `API endpoint "${endpoint.method} ${endpoint.path}" references entity "${endpoint.entity}" but no matching DB table found`,
+                        });
+                    }
                 }
             }
 
@@ -113,13 +137,17 @@ function checkConsistency(config) {
             (page.sections || []).forEach((section) => {
                 (section.components || []).forEach((comp) => {
                     if (comp.props?.entity) {
-                        const entityTableName = toSnakeCase(comp.props.entity) + 's';
-                        if (!dbTables.has(entityTableName) && !dbTables.has(comp.props.entity)) {
-                            issues.push({
-                                severity: 'warning',
-                                layer: 'cross-layer',
-                                message: `UI component in page "${page.name}" references entity "${comp.props.entity}" with no matching DB table`,
-                            });
+                        const entityLower = comp.props.entity.toLowerCase();
+                        const virtualEntities = new Set(['analytics', 'dashboard', 'report', 'search', 'upload', 'auth', 'session', 'stats', 'metric', 'all', '*']);
+                        
+                        if (!virtualEntities.has(entityLower)) {
+                            if (!hasMatchingTable(comp.props.entity, dbTables) && !dbTables.has(comp.props.entity)) {
+                                issues.push({
+                                    severity: 'warning',
+                                    layer: 'cross-layer',
+                                    message: `UI component in page "${page.name}" references entity "${comp.props.entity}" with no matching DB table`,
+                                });
+                            }
                         }
                     }
                 });
@@ -132,13 +160,17 @@ function checkConsistency(config) {
         auth.permissions.forEach((perm) => {
             // Check resource references
             if (perm.resource) {
-                const resourceTable = toSnakeCase(perm.resource) + 's';
-                if (!dbTables.has(resourceTable) && !dbTables.has(perm.resource) && !dbTables.has(toSnakeCase(perm.resource))) {
-                    issues.push({
-                        severity: 'info',
-                        layer: 'cross-layer',
-                        message: `Auth permission for resource "${perm.resource}" has no matching DB table`,
-                    });
+                const resourceLower = perm.resource.toLowerCase();
+                const virtualEntities = new Set(['analytics', 'dashboard', 'report', 'search', 'upload', 'auth', 'session', 'stats', 'metric', 'all', '*']);
+                
+                if (!virtualEntities.has(resourceLower)) {
+                    if (!hasMatchingTable(perm.resource, dbTables) && !dbTables.has(perm.resource)) {
+                        issues.push({
+                            severity: 'info',
+                            layer: 'cross-layer',
+                            message: `Auth permission for resource "${perm.resource}" has no matching DB table`,
+                        });
+                    }
                 }
             }
         });

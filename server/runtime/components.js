@@ -37,12 +37,12 @@ function renderStatCard(props) {
     const icon = getIconSVG(props.icon || 'chart');
     return `
     <div class="card stat-card">
-        <div class="stat-card-icon">${icon}</div>
+        <div class="stat-icon-wrap">${icon}</div>
         <div class="stat-card-content">
             <div class="stat-value" data-stat="${props.title || 'count'}">0</div>
             <div class="stat-label">${props.title || 'Metric'}</div>
         </div>
-        ${props.description ? `<div class="stat-trend">${props.description}</div>` : ''}
+        ${props.description ? `<div class="stat-trend"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg> ${props.description}</div>` : ''}
     </div>`;
 }
 
@@ -105,7 +105,7 @@ function renderForm(props, entities) {
             return `
             <div class="form-group">
                 <label class="form-label">${formatFieldName(f.name)}</label>
-                <textarea class="form-control" name="${f.name}" rows="3" ${required}></textarea>
+                <textarea class="form-control" name="${f.name}" rows="3" placeholder="Enter ${formatFieldName(f.name).toLowerCase()}..." ${required}></textarea>
             </div>`;
         }
 
@@ -132,7 +132,10 @@ function renderForm(props, entities) {
         <form class="entity-form" data-entity="${entity?.name || 'item'}" onsubmit="handleFormSubmit(event)">
             ${formFields}
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="submit" class="btn btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                    Save Changes
+                </button>
                 <button type="button" class="btn btn-secondary" onclick="this.closest('form').reset()">Reset</button>
             </div>
         </form>
@@ -344,16 +347,25 @@ function generateSampleRows(entity, fields, count) {
     const sampleData = getSampleData(entity);
     let rows = '';
 
+    const viewIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+    const editIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`;
+    const deleteIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>`;
+
     for (let i = 0; i < count; i++) {
         const cells = fields.map(f => {
             const val = sampleData[i]?.[f] || generateSampleValue(f, i);
+            if (f.toLowerCase() === 'status') {
+                const lower = String(val).toLowerCase();
+                const statusClass = (lower === 'active' || lower === 'completed' || lower === 'shipped') ? 'status-active' : '';
+                return `<td><span class="status-pill ${statusClass}">${val}</span></td>`;
+            }
             return `<td>${val}</td>`;
         }).join('');
 
         rows += `<tr data-id="${i + 1}">${cells}<td class="action-cell">
-            <button class="btn btn-sm btn-icon" onclick="viewRecord(${i + 1})" title="View">👁️</button>
-            <button class="btn btn-sm btn-icon" onclick="editRecord(${i + 1})" title="Edit">✏️</button>
-            <button class="btn btn-sm btn-icon btn-danger" onclick="deleteRecord(${i + 1})" title="Delete">🗑️</button>
+            <button class="btn btn-sm btn-icon" onclick="viewRecord(${i + 1})" title="View">${viewIcon}</button>
+            <button class="btn btn-sm btn-icon" onclick="editRecord(${i + 1})" title="Edit">${editIcon}</button>
+            <button class="btn btn-sm btn-icon btn-danger" onclick="deleteRecord(${i + 1})" title="Delete">${deleteIcon}</button>
         </td></tr>`;
     }
 

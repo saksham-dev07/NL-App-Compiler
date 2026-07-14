@@ -4,6 +4,10 @@
 
 const https = require('https');
 const http = require('http');
+const crypto = require('crypto');
+
+// In-memory cache to save tokens and latency on identical prompts
+const responseCache = new Map();
 
 // Token tracking
 const tokenTracker = {
@@ -44,6 +48,14 @@ async function callGemini(systemPrompt, userPrompt, options = {}) {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
         throw new Error('GEMINI_API_KEY not set');
+    }
+
+    // Check cache first
+    const cacheKey = crypto.createHash('md5').update(systemPrompt + userPrompt).digest('hex');
+    if (responseCache.has(cacheKey)) {
+        console.log('   ⚡ Returning cached LLM response');
+        // Return deep copy to prevent mutation
+        return JSON.parse(JSON.stringify(responseCache.get(cacheKey)));
     }
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
@@ -90,15 +102,21 @@ async function callGemini(systemPrompt, userPrompt, options = {}) {
 
             if (jsonMode) {
                 try {
-                    return JSON.parse(text);
+                    const parsed = JSON.parse(text);
+                    responseCache.set(cacheKey, JSON.parse(JSON.stringify(parsed)));
+                    return parsed;
                 } catch (parseErr) {
                     // Attempt to extract JSON from the response
                     const extracted = extractJSON(text);
-                    if (extracted) return extracted;
+                    if (extracted) {
+                        responseCache.set(cacheKey, JSON.parse(JSON.stringify(extracted)));
+                        return extracted;
+                    }
                     throw new Error(`Invalid JSON from Gemini: ${parseErr.message}`);
                 }
             }
 
+            responseCache.set(cacheKey, text);
             return text;
         } catch (err) {
             lastError = err;

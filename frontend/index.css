@@ -19,7 +19,7 @@
 
     --text-primary: #f0f0f5;
     --text-secondary: #a0a0b8;
-    --text-muted: #5a5a72;
+    --text-muted: #8a8aa3;
     --text-accent: #818cf8;
 
     --accent-primary: #6366f1;
@@ -468,6 +468,11 @@ body {
     transform: translateY(-1px);
 }
 
+.example-chip:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+}
+
 .chip-icon {
     font-size: var(--text-md);
 }
@@ -489,6 +494,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 0;
+    list-style: none;
 }
 
 .pipeline-stage {

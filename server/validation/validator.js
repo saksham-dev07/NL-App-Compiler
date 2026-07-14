@@ -253,9 +253,43 @@ function guessIcon(pageName) {
     return 'folder';
 }
 
+/**
+ * Helper to run generation, validation, and repair with LLM fallback.
+ * Abstracts the redundant retry logic found in pipeline stages.
+ */
+async function generateValidated(callGemini, promptTemplate, contextText, validateFn, repairFn, extraArgs = []) {
+    let result = await callGemini(
+        promptTemplate,
+        contextText,
+        { temperature: 0.1 }
+    );
+
+    // Validate
+    const validation = validateFn(result, ...extraArgs);
+    if (!validation.valid) {
+        console.log('   ⚠️  Validation failed, repairing...');
+        result = repairFn(result, validation.errors, ...extraArgs);
+
+        const revalidation = validateFn(result, ...extraArgs);
+        if (!revalidation.valid) {
+            console.log('   ⚠️  Repair insufficient, re-generating...');
+            const errorContext = `The previous output had these validation errors: ${JSON.stringify(revalidation.errors)}. Please fix them.`;
+            result = await callGemini(
+                promptTemplate,
+                `${contextText}\n\n${errorContext}`,
+                { temperature: 0.05 }
+            );
+            result = repairFn(result, [], ...extraArgs);
+        }
+    }
+    
+    return result;
+}
+
 module.exports = {
     validateIntent,
     repairIntent,
     validateDesign,
     repairDesign,
+    generateValidated,
 };

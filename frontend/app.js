@@ -50,10 +50,24 @@
         renderHistory();
     }
 
+    // --- Utility: Debounce ---
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
     // --- Event Listeners ---
     function setupEventListeners() {
-        // Prompt input
-        els.promptInput.addEventListener('input', onPromptInput);
+        // Prompt input with debouncing
+        const debouncedInput = debounce(onPromptInput, 150);
+        els.promptInput.addEventListener('input', debouncedInput);
         els.promptInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
                 e.preventDefault();
@@ -64,23 +78,37 @@
         // Compile button
         els.btnCompile.addEventListener('click', compile);
 
-        // Example chips
-        $$('.example-chip').forEach((chip) => {
-            chip.addEventListener('click', () => {
+        // Event Delegation for dynamic/repeated elements (Chips, Tabs, Copies, Modals)
+        document.body.addEventListener('click', (e) => {
+            // Example chips
+            const chip = e.target.closest('.example-chip');
+            if (chip) {
                 els.promptInput.value = chip.dataset.prompt;
                 onPromptInput();
                 els.promptInput.focus();
-            });
-        });
+                return;
+            }
 
-        // Output tabs
-        $$('.output-tab').forEach((tab) => {
-            tab.addEventListener('click', () => switchTab(tab.dataset.tab));
-        });
+            // Output tabs
+            const tab = e.target.closest('.output-tab');
+            if (tab) {
+                switchTab(tab.dataset.tab);
+                return;
+            }
 
-        // Copy buttons
-        $$('.btn-copy').forEach((btn) => {
-            btn.addEventListener('click', () => copySchema(btn.dataset.target, btn));
+            // Copy buttons
+            const copyBtn = e.target.closest('.btn-copy');
+            if (copyBtn) {
+                copySchema(copyBtn.dataset.target, copyBtn);
+                return;
+            }
+            
+            // Modal backdrop close
+            const backdrop = e.target.closest('.modal-backdrop');
+            if (backdrop) {
+                $$('.modal').forEach((m) => m.classList.add('hidden'));
+                return;
+            }
         });
 
         // Header buttons
@@ -91,13 +119,6 @@
         // Modal close buttons
         $('#btn-close-modal')?.addEventListener('click', () => toggleModal('eval-modal', false));
         $('#btn-close-history')?.addEventListener('click', () => toggleModal('history-modal', false));
-
-        // Modal backdrop close
-        $$('.modal-backdrop').forEach((backdrop) => {
-            backdrop.addEventListener('click', () => {
-                $$('.modal').forEach((m) => m.classList.add('hidden'));
-            });
-        });
 
         // Evaluation
         $('#btn-run-eval')?.addEventListener('click', runEvaluation);
@@ -156,50 +177,8 @@
                 throw new Error(data.error);
             }
 
-            // Success — populate schemas
-            state.currentConfig = data;
-            state.originalPrompt = prompt;
-            state.lastResult = data;
-            state.schemas = {
-                ui: data.result?.ui || {},
-                api: data.result?.api || {},
-                db: data.result?.db || {},
-                auth: data.result?.auth || {},
-                full: data.result || {},
-            };
-
-            // Update pipeline stages to completed
-            updateAllStagesCompleted(data.stages || []);
-
-            // Show repairs if any
-            if (data.repairs && data.repairs.length > 0) {
-                showRepairLog(data.repairs);
-            }
-
-            // Show assumptions if any
-            if (data.assumptions && data.assumptions.length > 0) {
-                showAssumptions(data.assumptions);
-            }
-
-            // Render schemas in tabs
-            renderSchemas();
-
-            // Render preview
-            if (data.html) {
-                renderPreview(data.html);
-            }
-
-            // Show metrics
-            const elapsed = Date.now() - startTime;
-            showMetrics({
-                latency: elapsed,
-                tokens: data.metrics?.totalTokens || 0,
-                repairs: data.metrics?.repairCount || 0,
-                cost: data.metrics?.estimatedCost || 0,
-            });
-
-            // Save to history
-            saveToHistory(prompt, data);
+            // Handle success
+            handlePipelineSuccess(data, prompt, startTime);
 
             // Show modify button
             showModifyMode();
@@ -288,35 +267,9 @@
 
             if (data.error) throw new Error(data.error);
 
-            // Update state with modified result
-            state.currentConfig = data;
-            state.lastResult = data;
             state.originalPrompt = `${state.originalPrompt}\n\nModification: ${modification}`;
-            state.schemas = {
-                ui: data.result?.ui || {},
-                api: data.result?.api || {},
-                db: data.result?.db || {},
-                auth: data.result?.auth || {},
-                full: data.result || {},
-            };
+            handlePipelineSuccess(data, `[MODIFY] ${modification}`, startTime);
 
-            updateAllStagesCompleted(data.stages || []);
-
-            if (data.repairs?.length > 0) showRepairLog(data.repairs);
-            if (data.assumptions?.length > 0) showAssumptions(data.assumptions);
-
-            renderSchemas();
-            if (data.html) renderPreview(data.html);
-
-            const elapsed = Date.now() - startTime;
-            showMetrics({
-                latency: elapsed,
-                tokens: data.metrics?.totalTokens || 0,
-                repairs: data.metrics?.repairCount || 0,
-                cost: data.metrics?.estimatedCost || 0,
-            });
-
-            saveToHistory(`[MODIFY] ${modification}`, data);
             showToast('App modified successfully!', 'success');
         } catch (err) {
             console.error('Modify error:', err);
@@ -327,6 +280,54 @@
             modifyBtn.querySelector('.btn-compile-text').textContent = '🔄 Modify';
             modifyBtn.disabled = false;
         }
+    }
+
+    // --- Helper: Shared Pipeline Success Logic ---
+    function handlePipelineSuccess(data, prompt, startTime) {
+        // Success — populate schemas
+        state.currentConfig = data;
+        if (!state.originalPrompt) state.originalPrompt = prompt;
+        state.lastResult = data;
+        state.schemas = {
+            ui: data.result?.ui || {},
+            api: data.result?.api || {},
+            db: data.result?.db || {},
+            auth: data.result?.auth || {},
+            full: data.result || {},
+        };
+
+        // Update pipeline stages to completed
+        updateAllStagesCompleted(data.stages || []);
+
+        // Show repairs if any
+        if (data.repairs && data.repairs.length > 0) {
+            showRepairLog(data.repairs);
+        }
+
+        // Show assumptions if any
+        if (data.assumptions && data.assumptions.length > 0) {
+            showAssumptions(data.assumptions);
+        }
+
+        // Render schemas in tabs
+        renderSchemas();
+
+        // Render preview
+        if (data.html) {
+            renderPreview(data.html);
+        }
+
+        // Show metrics
+        const elapsed = Date.now() - startTime;
+        showMetrics({
+            latency: elapsed,
+            tokens: data.metrics?.totalTokens || 0,
+            repairs: data.metrics?.repairCount || 0,
+            cost: data.metrics?.estimatedCost || 0,
+        });
+
+        // Save to history
+        saveToHistory(prompt, data);
     }
 
     // --- Pipeline UI ---
@@ -479,11 +480,11 @@
         try {
             await navigator.clipboard.writeText(JSON.stringify(schema, null, 2));
             btn.classList.add('copied');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = btn.innerHTML.replace('Copy', 'Copied!');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5L5.5 10.5L11.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied!`;
             setTimeout(() => {
                 btn.classList.remove('copied');
-                btn.innerHTML = originalText;
+                btn.innerHTML = originalHTML;
             }, 2000);
         } catch (err) {
             showToast('Failed to copy', 'error');
@@ -589,10 +590,19 @@
             timestamp: new Date().toISOString(),
             success: !data.error,
             metrics: data.metrics || {},
+            schemas: state.schemas || null,
+            html: data.html || null
         };
         state.history.unshift(entry);
-        if (state.history.length > 20) state.history.pop();
-        localStorage.setItem('nlc_history', JSON.stringify(state.history));
+        if (state.history.length > 10) state.history.pop(); // Limit to 10 to avoid 5MB localStorage limit
+        
+        try {
+            localStorage.setItem('nlc_history', JSON.stringify(state.history));
+        } catch (e) {
+            console.warn('History storage full, trimming');
+            state.history.pop();
+            localStorage.setItem('nlc_history', JSON.stringify(state.history));
+        }
         renderHistory();
     }
 
@@ -606,7 +616,7 @@
         els.historyList.innerHTML = state.history
             .map(
                 (h) => `
-            <div class="history-item" data-prompt="${h.prompt.replace(/"/g, '&quot;')}">
+            <div class="history-item" data-id="${h.id}">
                 <span class="history-item-prompt">${h.prompt}</span>
                 <span class="history-item-time">${new Date(h.timestamp).toLocaleString()}</span>
             </div>
@@ -616,8 +626,21 @@
 
         els.historyList.querySelectorAll('.history-item').forEach((item) => {
             item.addEventListener('click', () => {
-                els.promptInput.value = item.dataset.prompt;
-                onPromptInput();
+                const id = Number(item.dataset.id);
+                const h = state.history.find(x => x.id === id);
+                if (h) {
+                    els.promptInput.value = h.prompt;
+                    onPromptInput();
+                    
+                    if (h.schemas) {
+                        state.schemas = h.schemas;
+                        renderSchemas();
+                        if (h.html) renderPreview(h.html);
+                        els.pipelineSection.classList.remove('hidden');
+                        updateAllStagesCompleted([{duration:0},{duration:0},{duration:0},{duration:0}]);
+                        switchTab('preview');
+                    }
+                }
                 toggleModal('history-modal', false);
                 els.promptInput.focus();
             });
@@ -626,6 +649,8 @@
 
     // --- Session Reset ---
     function resetSession() {
+        if (!confirm('Are you sure you want to start a new session? This will clear your current progress.')) return;
+        
         els.promptInput.value = '';
         onPromptInput();
         els.pipelineSection.classList.add('hidden');

@@ -22,7 +22,7 @@
         <div class="header-inner">
             <div class="logo">
                 <div class="logo-icon">
-                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28" fill="none">
                         <rect x="2" y="2" width="24" height="24" rx="6" stroke="url(#logo-grad)" stroke-width="2.5"/>
                         <path d="M8 14L12 18L20 10" stroke="url(#logo-grad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                         <defs>
@@ -38,15 +38,15 @@
             </div>
             <nav class="header-nav">
                 <button id="btn-new-session" class="nav-btn" title="New Session">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
                     New
                 </button>
                 <button id="btn-history" class="nav-btn" title="History">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 4v4l3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/></svg>
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 4v4l3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/></svg>
                     History
                 </button>
                 <button id="btn-evaluate" class="nav-btn nav-btn-accent" title="Run Evaluation Suite">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 8l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 8l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     Evaluate
                 </button>
             </nav>
@@ -66,6 +66,7 @@
                 <div class="prompt-wrapper">
                     <textarea 
                         id="prompt-input" 
+                        aria-label="Describe your application"
                         placeholder="Build a CRM with login, contacts, dashboard, role-based access, and premium plan with payments. Admins can see analytics."
                         rows="6"
                         spellcheck="false"
@@ -75,7 +76,7 @@
                         <button id="btn-compile" class="btn-compile" disabled>
                             <span class="btn-compile-text">Compile</span>
                             <span class="btn-compile-icon">
-                                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9h12M11 5l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9h12M11 5l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </span>
                         </button>
                     </div>
@@ -87,22 +88,22 @@
                 <p class="examples-label">Try an example:</p>
                 <div class="examples-grid">
                     <button class="example-chip" data-prompt="Build a CRM with login, contacts, dashboard, role-based access, and premium plan with payments. Admins can see analytics.">
-                        <span class="chip-icon">📊</span> CRM System
+                        <span class="chip-icon" role="img" aria-hidden="true">📊</span> CRM System
                     </button>
                     <button class="example-chip" data-prompt="Create a project management tool like Trello with boards, cards, drag-and-drop, team assignments, due dates, and activity logs.">
-                        <span class="chip-icon">📋</span> Project Manager
+                        <span class="chip-icon" role="img" aria-hidden="true">📋</span> Project Manager
                     </button>
                     <button class="example-chip" data-prompt="Build an e-commerce store with products, categories, cart, checkout with Stripe, order tracking, and admin dashboard for inventory management.">
-                        <span class="chip-icon">🛒</span> E-Commerce
+                        <span class="chip-icon" role="img" aria-hidden="true">🛒</span> E-Commerce
                     </button>
                     <button class="example-chip" data-prompt="Create a learning management system with courses, lessons, quizzes, student progress tracking, certificates, and instructor dashboard.">
-                        <span class="chip-icon">📚</span> LMS Platform
+                        <span class="chip-icon" role="img" aria-hidden="true">📚</span> LMS Platform
                     </button>
                     <button class="example-chip" data-prompt="Build a restaurant reservation system with table management, time slots, customer reviews, menu display, and admin analytics.">
-                        <span class="chip-icon">🍽️</span> Restaurant
+                        <span class="chip-icon" role="img" aria-hidden="true">🍽️</span> Restaurant
                     </button>
                     <button class="example-chip" data-prompt="Create a healthcare appointment booking system with doctors, patients, prescriptions, medical records, and appointment reminders.">
-                        <span class="chip-icon">🏥</span> Healthcare
+                        <span class="chip-icon" role="img" aria-hidden="true">🏥</span> Healthcare
                     </button>
                 </div>
             </div>
@@ -110,8 +111,8 @@
             <!-- Pipeline Progress -->
             <div id="pipeline-section" class="pipeline-section hidden">
                 <h2 class="section-title">Compilation Pipeline</h2>
-                <div class="pipeline-stages">
-                    <div class="pipeline-stage" data-stage="intent">
+                <ol class="pipeline-stages">
+                    <li class="pipeline-stage" data-stage="intent">
                         <div class="stage-indicator">
                             <div class="stage-number">1</div>
                             <div class="stage-line"></div>
@@ -124,8 +125,8 @@
                                 <span class="stage-time"></span>
                             </div>
                         </div>
-                    </div>
-                    <div class="pipeline-stage" data-stage="design">
+                    </li>
+                    <li class="pipeline-stage" data-stage="design">
                         <div class="stage-indicator">
                             <div class="stage-number">2</div>
                             <div class="stage-line"></div>
@@ -138,8 +139,8 @@
                                 <span class="stage-time"></span>
                             </div>
                         </div>
-                    </div>
-                    <div class="pipeline-stage" data-stage="schema">
+                    </li>
+                    <li class="pipeline-stage" data-stage="schema">
                         <div class="stage-indicator">
                             <div class="stage-number">3</div>
                             <div class="stage-line"></div>
@@ -152,8 +153,8 @@
                                 <span class="stage-time"></span>
                             </div>
                         </div>
-                    </div>
-                    <div class="pipeline-stage" data-stage="refine">
+                    </li>
+                    <li class="pipeline-stage" data-stage="refine">
                         <div class="stage-indicator">
                             <div class="stage-number">4</div>
                             <div class="stage-line"></div>
@@ -166,8 +167,8 @@
                                 <span class="stage-time"></span>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </li>
+                </ol>
 
                 <!-- Repair Log -->
                 <div id="repair-log" class="repair-log hidden">
@@ -229,36 +230,36 @@
 
         <!-- Output Panel -->
         <section id="output-panel" class="panel">
-            <div class="output-tabs">
-                <button class="output-tab active" data-tab="preview">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2 6h12" stroke="currentColor" stroke-width="1.5"/></svg>
+            <div class="output-tabs" role="tablist">
+                <button class="output-tab active" data-tab="preview" role="tab" aria-selected="true" aria-controls="tab-preview" id="btn-tab-preview">
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2 6h12" stroke="currentColor" stroke-width="1.5"/></svg>
                     Live Preview
                 </button>
-                <button class="output-tab" data-tab="ui">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="2" y="9" width="12" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/></svg>
+                <button class="output-tab" data-tab="ui" role="tab" aria-selected="false" aria-controls="tab-ui" id="btn-tab-ui">
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="2" y="9" width="12" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/></svg>
                     UI Schema
                 </button>
-                <button class="output-tab" data-tab="api">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4h8M4 8h8M4 12h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                <button class="output-tab" data-tab="api" role="tab" aria-selected="false" aria-controls="tab-api" id="btn-tab-api">
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4h8M4 8h8M4 12h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
                     API Schema
                 </button>
-                <button class="output-tab" data-tab="db">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><ellipse cx="8" cy="4" rx="5" ry="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 4v8c0 1.1 2.24 2 5 2s5-.9 5-2V4" stroke="currentColor" stroke-width="1.5"/><path d="M3 8c0 1.1 2.24 2 5 2s5-.9 5-2" stroke="currentColor" stroke-width="1.5"/></svg>
+                <button class="output-tab" data-tab="db" role="tab" aria-selected="false" aria-controls="tab-db" id="btn-tab-db">
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><ellipse cx="8" cy="4" rx="5" ry="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 4v8c0 1.1 2.24 2 5 2s5-.9 5-2V4" stroke="currentColor" stroke-width="1.5"/><path d="M3 8c0 1.1 2.24 2 5 2s5-.9 5-2" stroke="currentColor" stroke-width="1.5"/></svg>
                     DB Schema
                 </button>
-                <button class="output-tab" data-tab="auth">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="4" y="7" width="8" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M6 7V5a2 2 0 114 0v2" stroke="currentColor" stroke-width="1.5"/></svg>
+                <button class="output-tab" data-tab="auth" role="tab" aria-selected="false" aria-controls="tab-auth" id="btn-tab-auth">
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="4" y="7" width="8" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M6 7V5a2 2 0 114 0v2" stroke="currentColor" stroke-width="1.5"/></svg>
                     Auth Rules
                 </button>
-                <button class="output-tab" data-tab="full">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M5 3L2 8l3 5M11 3l3 5-3 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <button class="output-tab" data-tab="full" role="tab" aria-selected="false" aria-controls="tab-full" id="btn-tab-full">
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M5 3L2 8l3 5M11 3l3 5-3 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     Full Config
                 </button>
             </div>
 
             <div class="output-content">
                 <!-- Preview Tab -->
-                <div id="tab-preview" class="tab-panel active">
+                <div id="tab-preview" class="tab-panel active" role="tabpanel" aria-labelledby="btn-tab-preview">
                     <div id="preview-container" class="preview-container">
                         <div class="preview-empty">
                             <div class="preview-empty-icon">
@@ -286,7 +287,7 @@
                 </div>
 
                 <!-- Schema Tabs -->
-                <div id="tab-ui" class="tab-panel">
+                <div id="tab-ui" class="tab-panel" role="tabpanel" aria-labelledby="btn-tab-ui">
                     <div class="schema-viewer">
                         <div class="schema-toolbar">
                             <span class="schema-label">ui_config.json</span>
@@ -298,7 +299,7 @@
                         <pre id="schema-ui" class="schema-code"><code>// UI schema will appear here after compilation</code></pre>
                     </div>
                 </div>
-                <div id="tab-api" class="tab-panel">
+                <div id="tab-api" class="tab-panel" role="tabpanel" aria-labelledby="btn-tab-api">
                     <div class="schema-viewer">
                         <div class="schema-toolbar">
                             <span class="schema-label">api_config.json</span>
@@ -310,7 +311,7 @@
                         <pre id="schema-api" class="schema-code"><code>// API schema will appear here after compilation</code></pre>
                     </div>
                 </div>
-                <div id="tab-db" class="tab-panel">
+                <div id="tab-db" class="tab-panel" role="tabpanel" aria-labelledby="btn-tab-db">
                     <div class="schema-viewer">
                         <div class="schema-toolbar">
                             <span class="schema-label">db_schema.json</span>
@@ -322,7 +323,7 @@
                         <pre id="schema-db" class="schema-code"><code>// DB schema will appear here after compilation</code></pre>
                     </div>
                 </div>
-                <div id="tab-auth" class="tab-panel">
+                <div id="tab-auth" class="tab-panel" role="tabpanel" aria-labelledby="btn-tab-auth">
                     <div class="schema-viewer">
                         <div class="schema-toolbar">
                             <span class="schema-label">auth_rules.json</span>
@@ -334,7 +335,7 @@
                         <pre id="schema-auth" class="schema-code"><code>// Auth rules will appear here after compilation</code></pre>
                     </div>
                 </div>
-                <div id="tab-full" class="tab-panel">
+                <div id="tab-full" class="tab-panel" role="tabpanel" aria-labelledby="btn-tab-full">
                     <div class="schema-viewer">
                         <div class="schema-toolbar">
                             <span class="schema-label">full_config.json</span>
@@ -354,11 +355,11 @@
     <div id="toast-container" class="toast-container"></div>
 
     <!-- Evaluation Modal -->
-    <div id="eval-modal" class="modal hidden">
+    <div id="eval-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="eval-modal-title">
         <div class="modal-backdrop"></div>
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Evaluation Suite</h2>
+                <h2 id="eval-modal-title">Evaluation Suite</h2>
                 <button id="btn-close-modal" class="modal-close">&times;</button>
             </div>
             <div class="modal-body">
@@ -379,11 +380,11 @@
     </div>
 
     <!-- History Modal -->
-    <div id="history-modal" class="modal hidden">
+    <div id="history-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="history-modal-title">
         <div class="modal-backdrop"></div>
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Generation History</h2>
+                <h2 id="history-modal-title">Generation History</h2>
                 <button id="btn-close-history" class="modal-close">&times;</button>
             </div>
             <div class="modal-body">
